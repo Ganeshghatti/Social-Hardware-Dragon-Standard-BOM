@@ -1,0 +1,424 @@
+﻿Project Specification
+Project Title: Robotic Arm Manufacturing Dashboard
+Tech Stack: Next.js (Full Stack) + MongoDB
+Auth: Admin Login (JWT)
+Theme Color: #ff6600
+Logo Path: /public/logo.png
+________________
+
+
+⚙️ 1. Project Overview
+The Robotic Arm Manufacturing Dashboard is an internal web platform to manage the production of a 7 Degrees of Freedom (7DOF) robotic arm.
+It centralizes manufacturing data — from parts and suppliers to assembly BOMs and production work orders — into a single, intuitive dashboard.
+This is a single-user (admin-only) system for now, designed to scale later into a multi-role manufacturing suite.
+________________
+
+
+🧭 2. Goals & Scope
+🎯 Primary Goals
+* Build a secure admin dashboard using Next.js + MongoDB.
+
+* Provide clean management interfaces for:
+
+   * Parts and inventory
+
+   * Assemblies and BOMs
+
+   * Work orders and QC processes
+
+   * Suppliers and purchase orders
+
+      * Generate reports (BOM cost, inventory value, work order summaries).
+
+🚫 Out of Scope
+         * No file uploads or CAD previews.
+
+         * No real-time socket updates.
+
+         * No external supplier API integrations (future).
+
+________________
+
+
+🧩 3. Layout & Design
+📐 Global Layout
+            * Sidebar (left, fixed):
+
+               * Background: dark gray (#1f1f1f)
+
+               * Active link accent: #ff6600
+
+               * Font: Inter or Poppins, bold section titles
+
+               * Items: Dashboard, Parts, BOMs, Work Orders, Inventory, Suppliers, QC, Reports, Settings
+
+                  * Navbar (top):
+
+                     * Background: white
+
+                     * Elements: Logo (from /public/logo.png), page title, admin avatar, logout button
+
+                     * Shadow: subtle drop shadow for elevation
+
+                     * Height: 60px
+
+                        * Main Content Area:
+
+                           * Background: #f9fafb
+
+                           * Rounded cards for content sections (border-radius: 1rem;)
+
+                           * Accent buttons and highlights use #ff6600
+
+                           * Hover effects: subtle opacity or underline transitions
+
+🎨 Visual Identity
+                              * Primary: #ff6600
+
+                              * Secondary: #1f1f1f
+
+                              * Text: #333333
+
+                              * Background: #f9fafb
+
+                              * Buttons:
+
+                                 * Primary: orange with white text
+
+                                 * Secondary: outline with orange border
+
+________________
+
+
+🖥️ 4. Pages & Features
+🔐 4.1 Login Page
+Route: /admin/login
+                                    * Fields: email, password
+
+                                    * Button: “Login” (orange)
+
+                                    * Logo on top center (/public/logo.png)
+
+                                    * Auth success → redirect /admin/dashboard
+
+                                    * Invalid creds → show toast: “Invalid email or password”
+
+Backend API:
+ POST /api/auth/login
+ Returns JWT (stored as HTTP-only cookie).
+________________
+
+
+📊 4.2 Dashboard Overview
+Route: /admin/dashboard
+ Purpose: A bird’s-eye view of factory data.
+UI:
+ Grid of summary cards (Tailwind grid-cols-3 md:grid-cols-4):
+                                       1. Total Parts in Stock
+
+                                       2. Active Work Orders
+
+                                       3. Pending POs
+
+                                       4. QC Issues This Month
+
+                                       5. BOM Versions
+
+                                       6. Low Stock Alerts
+
+Section 2: “Recent Activity” — show last 10 admin actions from audit_logs.
+________________
+
+
+⚙️ 4.3 Parts Management
+Route: /admin/parts
+UI Components:
+                                          * Table listing all parts
+
+                                          * “Add Part” button opens modal
+
+                                          * Editable fields inline or modal
+
+Table Columns:
+ Item Code | Name | Unit | Cost | Stock | Supplier | Reorder Point | Lead Time
+Actions:
+                                             * Add / Edit / Delete parts
+
+                                             * Search bar (fuzzy search)
+
+Backend APIs:
+                                                * GET /api/parts
+
+                                                * POST /api/parts
+
+                                                * PATCH /api/parts/:id
+
+                                                * DELETE /api/parts/:id
+
+________________
+
+
+🧱 4.4 Assemblies & BOM Manager
+Route: /admin/boms
+Purpose: Define how the robotic arm is assembled.
+UI:
+                                                   * Tree-view layout of parent-child items (collapsible nodes).
+
+                                                   * “Add Assembly” and “Add Component” modals.
+
+                                                   * “Version” dropdown for BOM versions (v1.0, v1.1, etc.)
+
+Actions:
+                                                      * Create/Edit BOM
+
+                                                      * Clone previous version
+
+                                                      * Export as CSV/PDF
+
+Backend APIs:
+                                                         * GET /api/boms
+
+                                                         * POST /api/boms
+
+                                                         * PATCH /api/boms/:id
+
+________________
+
+
+🦿 4.5 Work Orders
+Route: /admin/workorders
+Purpose: Track batches of robotic arm production.
+UI:
+ Table + Create Modal
+Fields:
+                                                            * Work Order ID
+
+                                                            * Product (linked to BOM)
+
+                                                            * Quantity
+
+                                                            * Scheduled Start/End
+
+                                                            * Status (Planned/In Progress/Completed)
+
+                                                            * Assigned Line
+
+Backend APIs:
+                                                               * GET /api/workorders
+
+                                                               * POST /api/workorders
+
+                                                               * PATCH /api/workorders/:id
+
+________________
+
+
+📦 4.6 Inventory Management
+Route: /admin/inventory
+Purpose: Monitor stock quantities and adjust levels.
+UI:
+                                                                  * Table of all items + filter for “Low Stock”
+
+                                                                  * “Adjust Stock” button → modal (add/remove quantity)
+
+Backend APIs:
+                                                                     * GET /api/inventory
+
+                                                                     * POST /api/inventory/adjust
+
+________________
+
+
+🧾 4.7 Suppliers & Purchase Orders
+Route: /admin/suppliers and /admin/purchase-orders
+Supplier Table:
+                                                                        * Name, Contact, Lead Time, Rating
+
+Purchase Orders:
+                                                                           * Create PO: choose supplier, select parts + quantity
+
+                                                                           * Update PO Status: Draft → Sent → Received
+
+Backend APIs:
+                                                                              * /api/suppliers CRUD
+
+                                                                              * /api/purchase-orders CRUD
+
+________________
+
+
+🔍 4.8 Quality Control (QC)
+Route: /admin/qc
+UI:
+                                                                                 * Table of inspections
+
+                                                                                 * “Add QC Record” modal with:
+
+                                                                                    * Related Work Order
+
+                                                                                    * Part ID
+
+                                                                                    * Pass/Fail toggle
+
+                                                                                    * Remarks
+
+Backend:
+                                                                                       * GET /api/qc
+
+                                                                                       * POST /api/qc
+
+________________
+
+
+📊 4.9 Reports
+Route: /admin/reports
+UI:
+ Tabs:
+                                                                                          * BOM Cost Breakdown
+
+                                                                                          * Inventory Valuation
+
+                                                                                          * Work Order Summary
+
+                                                                                          * Supplier Lead Time
+
+Each has “Export CSV” and “Export PDF” buttons.
+Backend:
+                                                                                             * /api/reports/bom-cost
+
+                                                                                             * /api/reports/inventory
+
+                                                                                             * /api/reports/workorders
+
+________________
+
+
+⚙️ 4.10 Settings & Audit Logs
+Route: /admin/settings
+UI:
+                                                                                                * Company name, currency
+
+                                                                                                * Costing method (FIFO/LIFO)
+
+                                                                                                * User list (for now: single admin)
+
+                                                                                                * Audit logs (table view, latest 100 changes)
+
+________________
+
+
+🧮 5. MongoDB Schema Overview
+Collection
+	Fields
+	users
+	{ email, password_hash, role, last_login }
+	parts
+	{ item_code, name, cost, stock_qty, reorder_point, supplier_id }
+	boms
+	{ product_id, type, version, items:[{ part_id, qty }] }
+	workorders
+	{ product_id, qty, status, schedule_start, schedule_end }
+	suppliers
+	{ name, contact_person, lead_time_days, rating }
+	purchase_orders
+	{ supplier_id, items:[{ part_id, qty, cost }], status }
+	inventory_transactions
+	{ part_id, qty_change, reason, date }
+	qc_records
+	{ part_id, work_order_id, inspector, pass_fail, remarks }
+	audit_logs
+	{ user_id, action, collection, document_id, timestamp }
+	________________
+
+
+🧰 6. API Routes Summary
+Method
+	Endpoint
+	Purpose
+	POST
+	/api/auth/login
+	Admin login
+	GET/POST/PATCH/DELETE
+	/api/parts
+	Manage parts
+	GET/POST/PATCH
+	/api/boms
+	Manage BOMs
+	GET/POST/PATCH
+	/api/workorders
+	Work order lifecycle
+	GET/POST
+	/api/inventory
+	Stock management
+	GET/POST
+	/api/suppliers
+	Supplier data
+	GET/POST
+	/api/purchase-orders
+	Purchase order handling
+	GET/POST
+	/api/qc
+	QC inspections
+	GET
+	/api/reports/*
+	Reporting endpoints
+	________________
+
+
+🔒 7. Authentication & Security
+                                                                                                   * Passwords hashed (bcrypt).
+
+                                                                                                   * JWT stored in HTTP-only cookie.
+
+                                                                                                   * /admin/* routes protected by middleware.
+
+                                                                                                   * CORS restricted to your domain.
+
+                                                                                                   * Helmet for HTTP headers.
+
+                                                                                                   * Input validation via Zod.
+
+________________
+
+
+🧪 8. Testing & Deployment
+Local Dev:
+                                                                                                      * Docker Compose: Next.js + MongoDB + Mongo Express
+
+                                                                                                      * npm run dev → starts both backend and frontend
+
+Testing:
+                                                                                                         * Jest for API unit tests
+
+                                                                                                         * Cypress for frontend
+
+Deployment:
+                                                                                                            * Vercel (frontend + API routes)
+
+                                                                                                            * MongoDB Atlas (DB)
+
+ENV Variables:
+MONGODB_URI=
+JWT_SECRET=
+ADMIN_EMAIL=
+ADMIN_PASSWORD=
+NEXT_PUBLIC_API_URL=
+
+
+________________
+
+
+✅ 9. MVP Completion Checklist
+                                                                                                               * Admin login & session management
+
+                                                                                                               * Sidebar + Navbar layout
+
+                                                                                                               * CRUD: Parts, BOMs, WOs, Suppliers, Inventory
+
+                                                                                                               * Basic QC and Reports
+
+                                                                                                               * No Socket.IO, no S3
+
+                                                                                                               * Orange (#ff6600) brand consistency
+
+                                                                                                               * Clean, mobile-friendly UI
