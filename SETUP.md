@@ -12,7 +12,13 @@ npm install
 ```
 
 ### 2. Configure Environment
-The `.env.local` file has been created. Make sure MongoDB is running:
+Create a `.env.local` file from the provided example and fill in real values. Make sure MongoDB is running:
+
+```bash
+cp .env.local.example .env.local
+# On Windows PowerShell you can use:
+# Copy-Item .env.local.example .env.local
+```
 
 **Option A: Local MongoDB**
 ```bash
