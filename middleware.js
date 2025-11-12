@@ -11,6 +11,7 @@ export async function middleware(request) {
   if (
     pathname.startsWith("/admin/login") ||
     pathname.startsWith("/api/auth/login") ||
+    pathname.startsWith("/api/admin/ensure") ||
     pathname.startsWith("/api/init") ||
     pathname === "/"
   ) {
@@ -49,6 +50,7 @@ export async function middleware(request) {
   if (
     pathname.startsWith("/api") &&
     !pathname.startsWith("/api/auth/login") &&
+    !pathname.startsWith("/api/admin/ensure") &&
     !pathname.startsWith("/api/init")
   ) {
     if (!token) {
