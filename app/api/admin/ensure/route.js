@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { hashPassword } from '@/lib/auth';
 
-const EXISTING_ADMIN_EMAIL = 'ganesh@socialhardware';
+const EXISTING_ADMIN_EMAIL = 'ganesh@socialhardware.in';
 const NEW_ADMIN_EMAIL = 'ganesh@socialhardware.in';
 const NEW_ADMIN_PASSWORD = 'Ganesh@1234';
 
