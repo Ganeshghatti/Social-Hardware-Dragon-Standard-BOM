@@ -17,8 +17,11 @@ export default function Navbar({ pageTitle }) {
 
   return (
     <nav className="fixed top-0 left-0 right-0 h-16 bg-white shadow-md z-10">
-      <div className="flex items-center justify-between h-full px-6 pl-72">
-        <h1 className="text-2xl font-bold text-gray-800">{pageTitle}</h1>
+      <div className="flex items-center justify-between h-full px-6">
+        <div className="flex items-center gap-2">
+          <Image src="/logo.png" alt="logo" width={100} height={100} />
+          <h1 className="text-2xl font-bold text-gray-800">{pageTitle}</h1>
+        </div>
         <div className="flex items-center gap-4">
           <div className="w-10 h-10 rounded-full bg-[#ff6600] flex items-center justify-center text-white font-bold">
             A
@@ -34,4 +37,3 @@ export default function Navbar({ pageTitle }) {
     </nav>
   );
 }
-
